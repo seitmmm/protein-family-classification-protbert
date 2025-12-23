@@ -1,0 +1,22 @@
+# Large artifacts
+embeddings/
+models/
+*.pkl
+*.npy
+
+# Datasets (do not push FASTA / big data)
+data/
+*.fasta
+*.fa
+*.fna
+
+# LaTeX build
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
