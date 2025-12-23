@@ -104,8 +104,9 @@ source .venv/bin/activate
 ```
 
 ### 2) Install requirements
-
+```bash
 pip install -r requirements.txt
+```
 If you plan to regenerate embeddings with GPU, install the CUDA-compatible PyTorch build from the official PyTorch site.
 
 Quick Start (Run Web App)
@@ -134,9 +135,9 @@ data/processed/label_map.json (label decoding)
 ### 2) Run the app
 
 From the repository root:
-
+```bash
 python web/app.py
-
+```
 
 Then open the local URL printed in the terminal (typically http://127.0.0.1:...).
 
@@ -167,7 +168,9 @@ Depending on the UI options you enable:
 
 Reproducing the Full Pipeline
 1) Build dataset from FASTA
+```bash
 python data/prepare_dataset.py
+```
 
 Outputs expected in data/processed/:
 
@@ -176,7 +179,9 @@ Outputs expected in data/processed/:
 * label_map.json
 
 2) Generate embeddings (ProtBERT → 1024D)
+```bash
 python data/generate_embeddings.py
+```
 
 Outputs expected in embeddings/:
 
@@ -209,7 +214,9 @@ Outputs:
 
 Analyses & Figures
 t-SNE
+```bash
 python tsne_protbert.py
+```
 
 
 Outputs in logs_tsne/:
@@ -219,7 +226,9 @@ Outputs in logs_tsne/:
 * tsne_kinase_highlight.png
 
 UMAP + Heatmap
+```bash
 python umap_and_heatmap.py
+```
 
 
 Outputs in analysis_umap/:
@@ -228,8 +237,9 @@ Outputs in analysis_umap/:
 * family-distance heatmap(s)
 
 Silhouette scores
+```bash
 python silhouette_scores.py
-
+```
 
 Outputs in analysis_silhouette/:
 
@@ -237,10 +247,14 @@ Outputs in analysis_silhouette/:
 
 Mutation Robustness
 Single-sequence robustness experiments
+```bash
 python mutation.py
+```
 
 Meta-ensemble robustness stress test
+```bash
 python mutation_stress_test_meta.py
+```
 
 
 Outputs in logs_mutations/:
