@@ -100,7 +100,7 @@ python -m venv .venv
 # Windows:
 .venv\Scripts\activate
 # macOS/Linux:
-source .venv/bin/activate
+source .venv/bin/activate '''
 
 ### 2) Install requirements
 
