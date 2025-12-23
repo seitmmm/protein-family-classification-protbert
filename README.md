@@ -102,7 +102,7 @@ python -m venv .venv
 # macOS/Linux:
 source .venv/bin/activate
 
-2) Install requirements
+### 2) Install requirements
 
 pip install -r requirements.txt
 If you plan to regenerate embeddings with GPU, install the CUDA-compatible PyTorch build from the official PyTorch site.
@@ -111,7 +111,7 @@ Quick Start (Run Web App)
 
 The interactive app lives in web/app.py.
 
-1) Ensure required artifacts exist
+### 1) Ensure required artifacts exist
 
 Before running, confirm you have:
 
@@ -130,7 +130,7 @@ models/meta_ensemble_lr.pkl (for stacking)
 data/processed/label_map.json (label decoding)
 
 
-2) Run the app
+### 2) Run the app
 
 From the repository root:
 
@@ -143,32 +143,139 @@ What the app does (typical workflow)
 
 Depending on the UI options you enable:
 
-Input: paste a protein sequence (amino acids) or select a sample
+1. Input: paste a protein sequence (amino acids) or select a sample
 
-Embedding: ProtBERT embedding extraction (1024D) using utils/embedder.py
+2. Embedding: ProtBERT embedding extraction (1024D) using utils/embedder.py
 
-Prediction:
+3. Prediction:
 
-base models (RF, MLP, KAN)
+* base models (RF, MLP, KAN)
+* optional ensembles (soft voting, meta-ensemble)
 
-optional ensembles (soft voting, meta-ensemble)
+4. Output:
 
-Output:
+* predicted family + confidence
+* top-k probabilities
+* optional unknown threshold
 
-predicted family + confidence
+5. Mutation Robustness Test:
 
-top-k probabilities
+* generate mutants (absolute k or % of length)
+* measure accuracy-on-mutants and confidence drop
+* optionally save plots/results
 
-optional unknown threshold
+Reproducing the Full Pipeline
+1) Build dataset from FASTA
+python data/prepare_dataset.py
 
-Mutation Robustness Test:
+Outputs expected in data/processed/:
 
-generate mutants (absolute k or % of length)
+* sequences.npy
+* labels.npy
+* label_map.json
 
-measure accuracy-on-mutants and confidence drop
+2) Generate embeddings (ProtBERT → 1024D)
+python data/generate_embeddings.py
 
-optionally save plots/results
+Outputs expected in embeddings/:
 
-Tip: if embedding generation is slow on CPU, run on a CUDA machine or precompute embeddings.
+* X.npy
+* Y.npy
+
+3) Train models
+
+Run training scripts under models/ (examples; use the ones you need):
+
+python models/train_rf
+python models/train_mlp_v2
+python models/train_kan
+python models/train_kan_smooth
+python models/generate_meta_features
+python models/ensemble_meta
+
+
+Saved artifacts appear in models/ and models/meta/.
+
+4) Evaluate and produce confusion matrices / scores
+python models/evaluate_models
+python models/eval_on_test
+
+
+Outputs:
+
+* results/model_scores.csv
+* confusion matrices in results/ and/or logged/logs/
+
+Analyses & Figures
+t-SNE
+python tsne_protbert.py
+
+
+Outputs in logs_tsne/:
+
+* tsne_all_families.png
+* per-family highlight plots
+* tsne_kinase_highlight.png
+
+UMAP + Heatmap
+python umap_and_heatmap.py
+
+
+Outputs in analysis_umap/:
+
+* UMAP plots
+* family-distance heatmap(s)
+
+Silhouette scores
+python silhouette_scores.py
+
+
+Outputs in analysis_silhouette/:
+
+* silhouette_scores.png
+
+Mutation Robustness
+Single-sequence robustness experiments
+python mutation.py
+
+Meta-ensemble robustness stress test
+python mutation_stress_test_meta.py
+
+
+Outputs in logs_mutations/:
+
+* mutation_compare_accuracy.png
+* mutation_compare_confidence.png
+* per-family curves and cached .npz results
+
+Output Artifacts (Where to Look)
+
+* Final metrics: results/model_scores.csv
+* Confusion matrices: results/*.png and logged/logs/*confusion*.png
+* Training curves: logged/figs/ and logged/figures/
+* t-SNE plots: logs_tsne/
+* UMAP & heatmaps: analysis_umap/
+* Mutation robustness: logs_mutations/
+
+Notes / Common Issues
+
+* Slow embedding extraction: ProtBERT embedding generation is heavy. Use CUDA if possible.
+* Missing files: If the web app fails due to missing artifacts, download from Drive and verify the expected paths.
+* FASTA format: sequences should contain valid amino acid letters; remove whitespace and headers when pasting into the app.
+* Unknown threshold: the UI threshold is useful if you want to return unknown when confidence is low.
+
+Credits
+
+* UniProt for sequence retrieval
+* ProtTrans / ProtBERT for embeddings
+* Standard ML references: Random Forest, stacking, t-SNE, etc.
+
+License
+
+All rights reserved.
+
+Contact
+
+Repository owner: https://github.com/seitmmm
 
 
