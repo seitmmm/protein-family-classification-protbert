@@ -139,8 +139,6 @@ From the repository root:
 python web/app.py
 ```
 
-Then open the local URL printed in the terminal (typically http://127.0.0.1:...).
-
 What the app does (typical workflow)
 
 Depending on the UI options you enable:
